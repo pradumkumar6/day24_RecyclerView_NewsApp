@@ -1,5 +1,6 @@
 package com.example.day24recyclerview
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -47,13 +48,36 @@ class MainActivity : AppCompatActivity() {
             "T20 World Cup 2024: Matthew Wade Reprimanded For Showing Dissent Following Umpire's Decision",
             "Tried to develop PMO as catalytic agent’: PM Modi addresses officials on Day 1"
         )
+        val newsContent = arrayOf(
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+            getString(R.string.news_content),
+        )
         // To set items inside recycler view
         myRecyclerView.layoutManager = LinearLayoutManager(this)
         newsArrayList = arrayListOf<News>()
         for (index in newsImageArray.indices) {
-            val news = News(newsHeadingArray[index], newsImageArray[index])
+            val news = News(newsHeadingArray[index], newsImageArray[index], newsContent[index])
             newsArrayList.add(news)
         }
-        myRecyclerView.adapter = MyAdapter(newsArrayList, this)
+        val myAdapter = MyAdapter(newsArrayList, this)
+        myRecyclerView.adapter = myAdapter
+        myAdapter.setItemClickListener(object : MyAdapter.onItemClickListener {
+            override fun onItemClick(position: Int) {
+                // On clicking each item , what action do you want to perform
+                val intent = Intent(this@MainActivity, NewsDetailActivity::class.java)
+                intent.putExtra("heading", newsArrayList[position].newsHeading)
+                intent.putExtra("imageId", newsArrayList[position].newsImage)
+                intent.putExtra("newsContent", newsArrayList[position].newsContent)
+                startActivity(intent)
+            }
+
+        })
     }
 }
